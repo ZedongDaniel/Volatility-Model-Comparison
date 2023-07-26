@@ -13,5 +13,6 @@ r_{t} & =\mu+\epsilon_{t} \\
 \end{aligned}
 ```
 
+I estimated parameters using the MLE method under normal density.
 
 
