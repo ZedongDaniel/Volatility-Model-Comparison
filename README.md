@@ -7,6 +7,9 @@ Volatility has several facts. First, the volatility tends to stay at a high leve
 In the script, I used CRSP monthly CRSP- value-weighted portfolio return and constructed the GJR-GARCH model and it takes this form: 
 $$r_{t} & =\mu+\epsilon_{t}$$  
 
+```math
+\left( \sum_{k=1}^n a_k b_k \right)^2 \leq \left( \sum_{k=1}^n a_k^2 \right) \left( \sum_{k=1}^n b_k^2 \right)
+```
 
 \epsilon_{t} & =\sigma_{t} z_{t}, \quad z_{t} \stackrel{i i d}{\sim} \mathcal{N}(0,1)
 \sigma_{t}^{2} & =\omega+\left(\alpha+\gamma \mathbf{1}\left\{r_{t-1}<\mu\right\}\right) \epsilon_{t-1}^{2}+\beta \sigma_{t-1}^{2}
