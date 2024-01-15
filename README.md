@@ -26,8 +26,8 @@ $H_0: \gamma = 0$
 $H_a: \gamma \neq 0$  
 We compute the statistic as 12.1211 and the chi-square critical value as 3.8415. It means we reject the null hypothesis. The parameter $\gamma$ is statistically significant.   
 
-After estimating parameters, we also calculate the realized volatility from the daily CRSP-value-weighted portfolio return and aggregate them into the monthly volatility. 
-$$ RV_t = \sqrt{\sum_{i \in \text{month}_t} r_i^2} $$
+After estimating parameters, we also calculate the realized volatility from the daily CRSP-value-weighted portfolio return and aggregate them into the monthly volatility.   
+$$RV_t = \sqrt{\sum_{i \in \text{month}_t} r_i^2}$$
 
 Ultimately, we plot the conditional volatility for GJR-GARCH(1,1) and GARCH(1,1) and realized volatility.
 
