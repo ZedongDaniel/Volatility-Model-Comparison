@@ -4,12 +4,18 @@ clear
 
 %% load data
 
-crsp = load("crsp_vwret.mat");
-
+% Sample Selection
+crsp = load('crsp_vwret.mat');
 csrpdates = crsp.crspdates;
 [year,moth,day,date_num] = decode_date(csrpdates);
 
 ret = crsp.ret;
+
+% Restrict time period
+% tt = find(and(year>=1964,year<=2015));
+tt = find(year>=1964);
+ret = ret(tt);
+date_num = date_num(tt);
 
 figure 
 plot(date_num, ret,'LineWidth',1.0)
@@ -75,24 +81,61 @@ chi_crit = chi2inv(1-0.05,1)
 
 % reject null
 
+
+%% rv
+x = load('CRSPmktportfolios_daily.txt');
+yr = x(:,1);
+mo = x(:,2);
+% day = x(:,3); % unused
+dvwret = x(:,4); % daily value weighted return
+
+% Get unique year-month pairs from daily data
+yrmo = unique([yr mo], 'rows');
+matlabdate = datenum(yrmo(:,1),yrmo(:,2),eomday(yrmo(:,1),yrmo(:,2)));
+
+% Realized volatility
+dategroup = findgroups(yr,mo); % group year-month pair (actually are days in i month)
+% ie: group all days in 1967-7, ...
+% splitapply sums by dategroup: in this case, year-month pairs
+rvar = splitapply(@sum, dvwret.^2, dategroup); % groupby - summarize
+
+% Restrict time period to match monthly data
+tt = find(and(yrmo(:,1)>=1964,yrmo(:,1)<=2015));
+rvar = rvar(tt);
+matlabdate = matlabdate(tt);
+
+%% plot
 figure
 subplot(2,1,1)
-plot(date_num, sqrt(sigsqhat_GJR)*100,'LineWidth',1.0,'Color','red')
+plot(matlabdate, sqrt(sigsqhat_GJR)*100,'LineWidth',1.0,'Color','red')
 hold on
-    plot(date_num, sqrt(sigsqhat_garch)*100,'LineWidth',1.0,'Color','blue')
+     plot(matlabdate, sqrt(sigsqhat_garch)*100,'LineWidth',1.0,'Color','blue')
 hold off
-legend('GJR-GARCH(1,1) model','GARCH(1,1) model')
+legend('GJR-GARCH(1,1)','GARCH(1,1)',"Location","northeast")
 ylabel('Monthly Volatility (%)')
+xlabel('Time')
+title('Two Volatility Models')
+datetick
+
+subplot(2,1,2)
+plot(matlabdate, sqrt(rvar)*100,'LineWidth',1.0,'Color','black')
+legend('Realized Volatility',"Location","northeast")
+ylabel('Monthly Volatility (%)')
+xlabel('Time')
+datetick
+
+figure
+plot(matlabdate, ret*100,'LineWidth',1.0,'Color','blue')
+hold on
+     plot(matlabdate, sqrt(sigsqhat_GJR)*100,'LineWidth',1.0,'Color','red')
+     plot(matlabdate, sqrt(sigsqhat_garch)*100,'LineWidth',1.0,'Color','yellow')
+hold off
+legend('return',"Location","best")
 xlabel('Time')
 title('Volatility model comparsion')
 datetick
 
-subplot(2,1,2)
-plot(date_num, ret*100,'LineWidth',1.0,'Color','blue')
-legend("Return")
-ylabel('Monthly return (%)')
-xlabel('Time')
-datetick
+
 
 
 
